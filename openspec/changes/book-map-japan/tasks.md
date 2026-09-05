@@ -16,9 +16,9 @@
 
 ## 3. パイプライン: GeoJSON変換と取得スクリプト — #3
 
-- [ ] 3.1 `pipeline/src/geojson.js`の`elementsToFeatures(records)`を実装する: Point座標の検証、`names.primary`→`name`、`brand.names.primary`→`brand`、`addresses[0].freeform`→`address`、`confidence`(数値)、`websites`(配列がある場合のみ)をpropertiesへ写す
-- [ ] 3.2 `pipeline/src/geojson.test.js`を書く: 各propertyの保持、`websites`・`address`を持たないレコードでキーが省略される、座標が不正なレコードがスキップされる
-- [ ] 3.3 `pipeline/src/fetch-pois.js`を実装する: `OVERTURE_RELEASE`を読み、取得が全件成功した場合のみ`out/book.geojson`へFeatureCollectionを書き出す。失敗時は`process.exitCode = 1`で終了し出力しない
+- [x] 3.1 `pipeline/src/geojson.js`の`elementsToFeatures(records)`を実装する: Point座標の検証、`names.primary`→`name`、`brand.names.primary`→`brand`、`addresses[0].freeform`→`address`、`confidence`(数値)、`websites`(配列がある場合のみ)をpropertiesへ写す
+- [x] 3.2 `pipeline/src/geojson.test.js`を書く: 各propertyの保持、`websites`・`address`を持たないレコードでキーが省略される、座標が不正なレコードがスキップされる
+- [x] 3.3 `pipeline/src/fetch-pois.js`を実装する: `OVERTURE_RELEASE`を読み、取得が全件成功した場合のみ`out/book.geojson`へFeatureCollectionを書き出す。失敗時は`process.exitCode = 1`で終了し出力しない
 
 ## 4. パイプライン: PMTiles生成と検証 — #4
 
