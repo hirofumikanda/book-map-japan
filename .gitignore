@@ -1,0 +1,20 @@
+# 依存パッケージ
+node_modules/
+
+# ログ
+*.log
+npm-debug.log*
+
+# OS 生成ファイル
+.DS_Store
+
+# パイプラインの中間・最終生成物(book.geojson / book.pmtiles など)
+pipeline/out/
+
+# Vite のビルド生成物
+web/dist/
+
+# PMTiles は原則追跡しない。ただし配信対象の web/public/book.pmtiles だけは
+# デプロイワークフローがパイプラインを実行しないためコミットする。
+*.pmtiles
+!web/public/book.pmtiles

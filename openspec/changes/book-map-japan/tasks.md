@@ -2,9 +2,9 @@
 
 ## 1. リポジトリ基盤 — #1
 
-- [ ] 1.1 `.gitignore`を作成する(`node_modules/`・`*.log`・`.DS_Store`・`pipeline/out/`・`web/dist/`・`*.pmtiles`と`!web/public/book.pmtiles`の除外解除)
-- [ ] 1.2 ルート`README.md`を作成する(アーキテクチャ図、ディレクトリ構成表、セットアップ・実行手順、テスト、デプロイ、OpenSpec開発フロー)
-- [ ] 1.3 gitリポジトリを初期化し、初回コミットを作成する(`web/public/img/*.png`を含む)
+- [x] 1.1 `.gitignore`を作成する(`node_modules/`・`*.log`・`.DS_Store`・`pipeline/out/`・`web/dist/`・`*.pmtiles`と`!web/public/book.pmtiles`の除外解除)
+- [x] 1.2 ルート`README.md`を作成する(アーキテクチャ図、ディレクトリ構成表、セットアップ・実行手順、テスト、デプロイ、OpenSpec開発フロー)
+- [x] 1.3 gitリポジトリを初期化し、初回コミットを作成する(`web/public/img/*.png`を含む) — 初回コミット `1cb2163` で充足済み
 
 ## 2. パイプライン: 骨組みとOvertureクエリ — #2
 
