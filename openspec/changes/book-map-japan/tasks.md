@@ -48,7 +48,7 @@
 - [ ] 7.1 `web/index.html`(Viteのroot直下)を作成する: `lang="ja"`、タイトル、`#map`の全画面スタイル、チェーン絞り込み`<select>`のスタイル(`.chain-filter-ctrl`)、`.visually-hidden`、`<script type="module" src="/src/main.js">`。import mapとCSSの`<link>`は置かない(design.md Decision 11)
 - [ ] 7.2 `web/src/main.js`冒頭で`import "maplibre-gl/dist/maplibre-gl.css"`し、PMTiles Protocolを`addProtocol`に登録し、OSMラスタ(`raster-opacity: 0.5`)+ `pmtiles://.../book.pmtiles`のvector sourceを持つstyleを組み立て、`glyphs`にdemotilesを指定する。PMTiles URLは`window.location.href`基準で解決する(spec: 背景地図の表示 / サブパス配信への対応)
 - [ ] 7.3 地図を`center: [139.7528, 35.6852]`・`zoom: 10`・`hash: true`で初期化し、OSM/Overture Maps両方のattributionを設定する(spec: 地図の初期表示位置 / 地図状態のURLハッシュ同期 / 出典への帰属表示)
-- [ ] 7.4 `CONFIDENCE_FILTER`(`step`式: z10-14=0.99 / z15=0.97 / z16=0.95 / z17+=0.90)と`buildBookFilter(selectedValue)`(`["all", confidence, scope]`)を実装する(design.md Decision 4・9)
+- [ ] 7.4 `CONFIDENCE_FILTER`(`step`式: z10-14=0.99 / z15=0.97 / z16=0.95 / z17+=0.90。チェーン店以外にのみ適用)と`buildBookFilter(selectedValue)`を実装する。「すべて」は`["any", ["!=", chainIdExpr, ""], ["all", [">=", ["zoom"], 14], CONFIDENCE_FILTER]]`、特定チェーン選択は`["==", chainIdExpr, "<id>"]`(design.md Decision 4・9)
 - [ ] 7.5 アイコン登録処理を実装する: `ICON_IMAGE_DEFS`(汎用`book.png` + 9チェーン)、`iconImageUrl()`(`window.location.href`基準)、`loadAndAddBookIcon()`、`styleimagemissing`ハンドラ(design.md Decision 10)
 - [ ] 7.6 `map.on("load")`で全アイコンを`Promise.all`でロードしてから`book`シンボルレイヤを追加する: `minzoom: 10`、`maxzoom`未設定(オーバーズーム)、`filter: buildBookFilter("all")`、`icon-image`は`buildIconImageExpression()`、`icon-allow-overlap: true`、`icon-size: 0.5`
 - [ ] 7.7 ラベルのlayoutを設定する: `text-field`は`step`式でz15未満は空文字列・z15以上は`name`→`brand`→`operator`のcoalesce、`text-font: ["Noto Sans Regular"]`、`text-size: 12`、`text-variable-anchor: ["left","top"]`、`text-radial-offset: 0.6`、`text-optional: true`(spec: POIラベルの配置)
@@ -77,9 +77,9 @@
 ## 11. 検証 — #12
 
 - [ ] 11.1 `cd pipeline && npm test`、`cd web && npm test`が全件パスすることを確認する
-- [ ] 11.2 ローカル(`npm run build && npm run preview`)でz10/z13/z14/z15/z16の表示を確認する: z14未満でチェーン店のみ、z14以上で非チェーンも表示、z15以上でラベルが出る(spec: 書店POIのシンボルレイヤ表示 / POIラベルの配置)
+- [ ] 11.2 ローカル(`npm run build && npm run preview`)でz10/z13/z14/z15/z16の表示を確認する: z14未満でチェーン店のみ(`confidence`が0.99未満のチェーン店もz10で表示される)、z14以上で非チェーンも表示、z15以上でラベルが出る(spec: 書店POIのシンボルレイヤ表示 / ズームレベルに応じたconfidenceフィルタ / POIラベルの配置)
 - [ ] 11.3 9チェーンそれぞれのPOIが指定アイコンで、未一致POIが`book.png`で描画されることを確認する(spec: チェーン店のアイコンによる視覚的識別)
-- [ ] 11.4 プルダウンで各チェーンを選択し、当該チェーンのみが表示されること・z14未満でも表示されること・「すべて」に戻ると元の条件に戻ることを確認する(spec: チェーン店の絞り込みプルダウンメニュー)
+- [ ] 11.4 プルダウンで各チェーンを選択し、当該チェーンのみが表示されること・z14未満でも`confidence`によらず表示されること・「すべて」に戻ると元の条件に戻ることを確認する(spec: チェーン店の絞り込みプルダウンメニュー)
 - [ ] 11.5 POIをクリックして店名・ブランド・住所・信頼度(生値)・websitesリンクがポップアップに出ることを確認する
 - [ ] 11.6 `npm run preview`のオリジンに対し`curl -i -r 0-99 <preview origin>/book.pmtiles`が`206 Partial Content`を返すことを確認する
 - [ ] 11.7 ハッシュ付きURLで開いた場合に指定位置で初期化され、パン/ズームでハッシュが更新されることを確認する
