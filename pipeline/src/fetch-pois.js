@@ -4,18 +4,9 @@ import { fileURLToPath } from "node:url";
 
 import { elementsToFeatures, toFeatureCollection } from "./geojson.js";
 import { queryOverturePlaces } from "./overture-client.js";
+import { resolveGeoJsonPath } from "./paths.js";
 
-const PIPELINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_GEOJSON_PATH = path.join(PIPELINE_ROOT, "out", "book.geojson");
-
-/** 出力先。BOOK_GEOJSON_PATH で上書きできる。 */
-export function resolveGeoJsonPath(env = process.env) {
-  const override = env?.BOOK_GEOJSON_PATH;
-  if (typeof override === "string" && override.trim() !== "") {
-    return path.resolve(override.trim());
-  }
-  return DEFAULT_GEOJSON_PATH;
-}
+export { resolveGeoJsonPath };
 
 async function writeGeoJsonFile(outputPath, featureCollection) {
   await mkdir(path.dirname(outputPath), { recursive: true });

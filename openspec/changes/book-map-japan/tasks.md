@@ -22,10 +22,10 @@
 
 ## 4. パイプライン: PMTiles生成と検証 — #4
 
-- [ ] 4.1 `pipeline/src/build-tiles.js`を実装する: tippecanoeを`--output`・`--force`・`--layer=book`・`--minimum-zoom=10`・`--maximum-zoom=14`・`--no-feature-limit`・`--no-tile-size-limit`・`--drop-rate=0`で起動する。入出力は`BOOK_GEOJSON_PATH`・`BOOK_PMTILES_PATH`で上書き可能にし、`ENOENT`は導入案内付きエラーにする(design.md Decision 5・6)
-- [ ] 4.2 `pipeline/src/tile-math.js`の`lonLatToTile(lon, lat, zoom)`と`tile-math.test.js`(既知の座標→タイル番号)を実装する
-- [ ] 4.3 `pipeline/src/verify-tiles.js`を実装する: `pmtiles show --header-json`でminzoom=10/maxzoom=14を検証し、GeoJSONから等間隔サンプリングしたPOIが対応するz14タイル内にFeatureとして存在することを検証する(`BOOK_VERIFY_SAMPLE_SIZE`、既定5)。配列プロパティはタイル側のJSON文字列をパースして比較する
-- [ ] 4.4 `pipeline/README.md`を書く: 必要ツール(DuckDB CLI・tippecanoe・pmtiles)、`OVERTURE_RELEASE`の説明、3コマンドの実行手順、環境変数、ディレクトリ構成
+- [x] 4.1 `pipeline/src/build-tiles.js`を実装する: tippecanoeを`--output`・`--force`・`--layer=book`・`--minimum-zoom=10`・`--maximum-zoom=14`・`--no-feature-limit`・`--no-tile-size-limit`・`--drop-rate=0`で起動する。入出力は`BOOK_GEOJSON_PATH`・`BOOK_PMTILES_PATH`で上書き可能にし、`ENOENT`は導入案内付きエラーにする(design.md Decision 5・6)
+- [x] 4.2 `pipeline/src/tile-math.js`の`lonLatToTile(lon, lat, zoom)`と`tile-math.test.js`(既知の座標→タイル番号)を実装する
+- [x] 4.3 `pipeline/src/verify-tiles.js`を実装する: `pmtiles show --header-json`でminzoom=10/maxzoom=14を検証し、GeoJSONから等間隔サンプリングしたPOIが対応するz14タイル内にFeatureとして存在することを検証する(`BOOK_VERIFY_SAMPLE_SIZE`、既定5)。配列プロパティはタイル側のJSON文字列をパースして比較する
+- [x] 4.4 `pipeline/README.md`を書く: 必要ツール(DuckDB CLI・tippecanoe・pmtiles)、`OVERTURE_RELEASE`の説明、3コマンドの実行手順、環境変数、ディレクトリ構成
 
 ## 5. パイプラインの実行とデータ確定 — #5
 
