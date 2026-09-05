@@ -1,0 +1,18 @@
+{
+  "name": "book-map-japan-pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Overture Maps Places から日本全国の書店POIを取得し、PMTiles を生成するデータパイプライン",
+  "type": "module",
+  "scripts": {
+    "fetch": "node src/fetch-pois.js",
+    "build:tiles": "node src/build-tiles.js",
+    "verify:tiles": "node src/verify-tiles.js",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@mapbox/vector-tile": "^2.0.3",
+    "pbf": "^4.0.1",
+    "pmtiles": "^4.3.0"
+  }
+}
