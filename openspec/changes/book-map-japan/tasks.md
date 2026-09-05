@@ -37,8 +37,8 @@
 
 ## 6. ビューア: 骨組みとチェーン照合テーブル — #6(6.1〜6.2)/ #7(6.3〜6.5)
 
-- [ ] 6.1 `web/package.json`を作成する(ESM、`dev`(`vite`)・`build`(`vite build`)・`preview`(`vite preview`)・`test`(`node --test`)スクリプト、dependencies: `maplibre-gl@^6`・`pmtiles@^3`、devDependencies: `vite@^7`)
-- [ ] 6.2 `web/vite.config.js`を作成する: root=`web`、publicDir=`public`、`base: './'`、`build.outDir: 'dist'`(design.md Decision 11)
+- [x] 6.1 `web/package.json`を作成する(ESM、`dev`(`vite`)・`build`(`vite build`)・`preview`(`vite preview`)・`test`(`node --test`)スクリプト、dependencies: `maplibre-gl@^6`・`pmtiles@^3`、devDependencies: `vite@^7`)
+- [x] 6.2 `web/vite.config.js`を作成する: root=`web`、publicDir=`public`、`base: './'`、`build.outDir: 'dist'`(design.md Decision 11)
 - [ ] 6.3 `web/src/chains.js`を実装する: `GENERIC_BOOK_ICON_ID`、5.3で確定した`CHAIN_TABLE`(9チェーン。評価順はジュンク堂→丸善)、`normalizeChainText`(NFKC + 法人格表記除去)、`resolveChainIconId`(design.md Decision 7・8)
 - [ ] 6.4 `chains.js`に`buildIconImageExpression()`・`buildChainIdExpression()`・`CHAIN_FILTER_OPTIONS`を追加する。3者が同じmatchKeys部分一致条件・同じ評価順を共有する形にする
 - [ ] 6.5 `web/src/chains.test.js`を書く: 9チェーンそれぞれが専用アイコンIDへ解決される、未一致が汎用IDへフォールバックする、法人格表記(株式会社有隣堂)・全角半角ゆれ・「紀伊国屋」旧字体差が吸収される、「丸善ジュンク堂書店」が`junku`になる、`name`のみでも判定される、生成される式の形が期待どおり
