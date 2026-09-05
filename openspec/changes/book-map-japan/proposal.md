@@ -8,9 +8,9 @@
 
 - **データパイプライン(`pipeline/`)を新規追加**: Overture Maps Places(theme=places, type=place)から`categories.primary = 'bookstore'`かつ日本国内・`confidence >= 0.9`のPOIをDuckDB経由で取得し、GeoJSONを経てtippecanoeで`book.pmtiles`(MVT, z10-14, source-layer: `book`)へ変換する。生成物のメタデータとサンプルPOIを検証する`verify:tiles`も含む。
 - **Webフロントエンド(`web/`)を新規追加**: MapLibre GL JS v6 + PMTiles Protocolで、透過50%のOpenStreetMap Standard背景地図上に書店POIをシンボルレイヤとして表示する。ビルドツールにはViteを使い、`web/public/`(アイコン画像・PMTiles)を含む静的資産一式を`web/dist/`へ出力する。
-- **チェーン店の優先表示**: `brand`/`operator`/`name`を既知チェーン照合テーブルと部分一致で突き合わせ、チェーン店はz10以上、チェーン店以外はz14以上でのみ表示する。加えて左上のプルダウンでチェーンを絞り込める。
+- **チェーン店の優先表示**: `brand`/`operator`/`name`を既知チェーン照合テーブルと部分一致で突き合わせ、チェーン店はz10以上でconfidenceしきい値によらず全件、チェーン店以外はz14以上かつしきい値を満たすもののみ表示する。加えて左上のプルダウンでチェーンを絞り込める。
 - **チェーン別アイコン**: 既知9チェーン(くまざわ書店・未来屋書店・宮脇書店・紀伊國屋書店・丸善・ジュンク堂書店・文教堂・三省堂書店・有隣堂)に`web/public/img/`配下の専用画像を割り当て、未一致POIは汎用アイコン`book.png`で表示する。
-- **ズーム連動のconfidenceフィルタ・ラベル・各種コントロール**: z10-14は0.99以上/z15は0.97以上/z16は0.95以上/z17以上は0.90以上のconfidenceしきい値、z15以上での店名ラベル表示、NavigationControl(右上)・GeolocateControl(右下)・URLハッシュ同期・Overture Maps帰属表示。
+- **ズーム連動のconfidenceフィルタ(チェーン店以外のみ)・ラベル・各種コントロール**: チェーン店以外へ適用するz10-14は0.99以上/z15は0.97以上/z16は0.95以上/z17以上は0.90以上のconfidenceしきい値(チェーン店には適用しない)、z15以上での店名ラベル表示、NavigationControl(右上)・GeolocateControl(右下)・URLハッシュ同期・Overture Maps帰属表示。
 - **GitHub Pagesへの自動デプロイを新規追加**: `main`へのpushまたは`workflow_dispatch`で`web`をViteでビルドし、`web/dist/`をGitHub Pagesへ公開するGitHub Actionsワークフロー。パイプラインの実行は含まず、`web/public/book.pmtiles`はコミット済みの前提とする。
 
 ## Capabilities
