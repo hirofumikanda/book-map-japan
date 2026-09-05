@@ -28,7 +28,7 @@
 - **新規ディレクトリ**: `pipeline/`(Node.js ESM、`src/overture-client.js`・`geojson.js`・`fetch-pois.js`・`build-tiles.js`・`verify-tiles.js`・`tile-math.js`とそのユニットテスト)、`web/`(`index.html`・`vite.config.js`・`src/main.js`・`src/chains.js`)、`.github/workflows/deploy-pages.yml`。
 - **既存資産**: `web/public/img/*.png`(10ファイル)は変更・移動せずそのまま参照する(Viteのpublic dirの規約に合致するため)。
 - **外部依存(npm外)**: DuckDB CLI(`spatial`・`httpfs`拡張)、tippecanoe。いずれもパイプライン実行時のみ必要で、デプロイワークフローでは不要。
-- **npm依存**: `web`はdependenciesに`maplibre-gl@^6`・`pmtiles@^3`、devDependenciesに`vite@^7`。`pipeline`はdevDependenciesとして`pmtiles`・`@mapbox/vector-tile`・`pbf`。
+- **npm依存**: `web`はdependenciesに`maplibre-gl@^6`・`pmtiles@^4`、devDependenciesに`vite@^8`。`pipeline`はdevDependenciesとして`pmtiles`(`web`と同じく`^4`)・`@mapbox/vector-tile`・`pbf`。いずれも各パッケージの最新メジャーに揃える。`vite@^8`はNode `^20.19.0 || >=22.12.0`を要求するため、開発環境とデプロイワークフローのNodeは22系を使う。
 - **外部サービス**: Overture Maps(AWS S3 `overturemaps-us-west-2`、`us-west-2`リージョン)、OpenStreetMapタイルサーバー、`demotiles.maplibre.org`のグリフサーバー、GitHub Pages。
 - **リポジトリ設定(手動作業)**: 初回のみSettings > Pages > SourceをGitHub Actionsに設定する必要がある。
 - **コミット対象のバイナリ**: `web/public/book.pmtiles`はデプロイワークフローがパイプラインを実行しないためリポジトリへコミットする(`.gitignore`で当該ファイルのみ除外解除)。

@@ -150,6 +150,7 @@ Node側のユニットテスト用に`resolveChainIconId(properties)`(NFKC正規
 - **`base: './'`**: 生成されるHTMLの資産参照が相対パスになり、オリジン直下でもGitHub Pagesのサブパス(`https://<user>.github.io/<repo>/`)でも同じ成果物が動く。リポジトリ名をビルド設定へ埋め込まずに済む(spec: サブパス配信への対応)。
 - **CSSはJSからimportする**: `src/main.js`冒頭で`import "maplibre-gl/dist/maplibre-gl.css"`と書けばViteがバンドルするため、`index.html`側の`<link>`とvendorコピーが不要になる。
 - **ユニットテストはViteに依存させない**: `chains.js`は素のESMのままにし、`node --test`で実行する。テストのためだけにテストランナーを追加しない。
+- **依存のメジャーは最新に揃える**: `maplibre-gl@^6`・`pmtiles@^4`・`vite@^8`。`pmtiles`は`pipeline`側も`^4`であり、同一リポジトリ内でメジャーを割らない。`pmtiles@4`の`Protocol#tile(params, abortController)`はMapLibre v4以降のPromiseベースの`addProtocol`に対応しており、v6と組み合わせて使える(動作確認済み)。`vite@^8`はNode `^20.19.0 || >=22.12.0`を要求するため、開発環境とCIのNodeは22系を前提とする。
 
 - **代替案**: バンドラ無し・import map + 自前コピースクリプト(cafe-map-japanの現行構成) → cafe側と構成は揃うが、vendorのコピー対象ファイル(maplibre-glの`.mjs` 3点等)を依存パッケージの内部構造に合わせて手で維持し続ける必要がある。ユーザー指定によりViteを採用する。
 
@@ -163,7 +164,7 @@ PMTilesはクライアントがバイト範囲でタイルを取り出す方式�
 
 ### Decision 13: デプロイはGitHub Actions、`book.pmtiles`はコミット済み前提
 
-`.github/workflows/deploy-pages.yml`が`main`へのpushと`workflow_dispatch`をトリガーに、`web`で`npm ci` → `npm run build`(`vite build`)し、その出力である`web/dist/`を`upload-pages-artifact`/`deploy-pages`で公開する。ビルドジョブ失敗時は`needs`によりデプロイジョブが走らない。ワークフローはパイプラインを実行しないため、`.gitignore`では`*.pmtiles`を無視しつつ`!web/public/book.pmtiles`で当該ファイルのみ除外を解除する。
+`.github/workflows/deploy-pages.yml`が`main`へのpushと`workflow_dispatch`をトリガーに、`actions/setup-node`でNode 22を用意したうえで`web`で`npm ci` → `npm run build`(`vite build`)し、その出力である`web/dist/`を`upload-pages-artifact`/`deploy-pages`で公開する。ビルドジョブ失敗時は`needs`によりデプロイジョブが走らない。ワークフローはパイプラインを実行しないため、`.gitignore`では`*.pmtiles`を無視しつつ`!web/public/book.pmtiles`で当該ファイルのみ除外を解除する。
 
 ## Risks / Trade-offs
 

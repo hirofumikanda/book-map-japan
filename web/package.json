@@ -1,0 +1,19 @@
+{
+  "name": "book-map-japan-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "maplibre-gl": "^6.7.0",
+    "pmtiles": "^4.5.0"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}
