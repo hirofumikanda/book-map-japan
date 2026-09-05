@@ -29,11 +29,11 @@
 
 ## 5. パイプラインの実行とデータ確定 — #5
 
-- [ ] 5.1 `OVERTURE_RELEASE=<最新リリース> npm run fetch`を実行し、`out/book.geojson`の件数を確認する
-- [ ] 5.2 `out/book.geojson`の`brand`充足率と`name`の表記分布を集計し、9チェーンそれぞれの実際の表記を洗い出す(design.md Open Questions)
-- [ ] 5.3 集計結果をもとに`CHAIN_TABLE`のmatchKeysを確定する。特に「紀伊國屋/紀伊国屋」の両表記、「丸善ジュンク堂書店」の評価順、「丸善」「三省堂」の誤マッチ有無を確認する(design.md Decision 8)
-- [ ] 5.4 `npm run build:tiles`と`npm run verify:tiles`を実行し、検証をパスさせる
-- [ ] 5.5 `cp pipeline/out/book.pmtiles web/public/book.pmtiles`で配置し、ファイルサイズを確認したうえでコミットする
+- [x] 5.1 `OVERTURE_RELEASE=<最新リリース> npm run fetch`を実行し、`out/book.geojson`の件数を確認する
+- [x] 5.2 `out/book.geojson`の`brand`充足率と`name`の表記分布を集計し、9チェーンそれぞれの実際の表記を洗い出す(design.md Open Questions)
+- [x] 5.3 集計結果をもとに`CHAIN_TABLE`のmatchKeysを確定する。特に「紀伊國屋/紀伊国屋」の両表記、「丸善ジュンク堂書店」の評価順、「丸善」「三省堂」の誤マッチ有無を確認する(design.md Decision 8)
+- [x] 5.4 `npm run build:tiles`と`npm run verify:tiles`を実行し、検証をパスさせる
+- [x] 5.5 `cp pipeline/out/book.pmtiles web/public/book.pmtiles`で配置し、ファイルサイズを確認したうえでコミットする
 
 ## 6. ビューア: 骨組みとチェーン照合テーブル — #6(6.1〜6.2)/ #7(6.3〜6.5)
 
