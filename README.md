@@ -39,7 +39,7 @@ flowchart LR
 
 | ツール | 用途 | 備考 |
 | --- | --- | --- |
-| Node.js 20 以上 | `pipeline` / `web` の実行 | |
+| Node.js 20.19 以上(22 系は 22.12 以上) | `pipeline` / `web` の実行 | `web` の `vite@8` が要求する。`pipeline` だけなら 20 以上で足りる |
 | [DuckDB CLI](https://duckdb.org/docs/installation/) | Overture Places(S3 上の GeoParquet)へのクエリ | `spatial`・`httpfs` 拡張を使用。初回実行時に自動で `INSTALL` される |
 | [tippecanoe](https://github.com/felt/tippecanoe) | GeoJSON → PMTiles(MVT)変換 | |
 | [pmtiles CLI](https://github.com/protomaps/PMTiles/tree/main/go) | 生成した PMTiles の検証 | `verify:tiles` で使用 |

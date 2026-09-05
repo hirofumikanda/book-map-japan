@@ -37,7 +37,7 @@
 
 ## 6. ビューア: 骨組みとチェーン照合テーブル — #6(6.1〜6.2)/ #7(6.3〜6.5)
 
-- [x] 6.1 `web/package.json`を作成する(ESM、`dev`(`vite`)・`build`(`vite build`)・`preview`(`vite preview`)・`test`(`node --test`)スクリプト、dependencies: `maplibre-gl@^6`・`pmtiles@^3`、devDependencies: `vite@^7`)
+- [x] 6.1 `web/package.json`を作成する(ESM、`dev`(`vite`)・`build`(`vite build`)・`preview`(`vite preview`)・`test`(`node --test`)スクリプト、dependencies: `maplibre-gl@^6`・`pmtiles@^4`、devDependencies: `vite@^8`)
 - [x] 6.2 `web/vite.config.js`を作成する: root=`web`、publicDir=`public`、`base: './'`、`build.outDir: 'dist'`(design.md Decision 11)
 - [ ] 6.3 `web/src/chains.js`を実装する: `GENERIC_BOOK_ICON_ID`、5.3で確定した`CHAIN_TABLE`(9チェーン。評価順はジュンク堂→丸善)、`normalizeChainText`(NFKC + 法人格表記除去)、`resolveChainIconId`(design.md Decision 7・8)
 - [ ] 6.4 `chains.js`に`buildIconImageExpression()`・`buildChainIdExpression()`・`CHAIN_FILTER_OPTIONS`を追加する。3者が同じmatchKeys部分一致条件・同じ評価順を共有する形にする
@@ -66,11 +66,11 @@
 
 - [ ] 9.1 `npm run dev`と`npm run build && npm run preview`の両方で`book.pmtiles`とアイコンが解決され、POIが表示されることを確認する
 - [ ] 9.2 `curl -i -r 0-99 <preview origin>/book.pmtiles`が`206 Partial Content`と正しい`Content-Range`を返すことを実測する。返さない場合のみ、`configurePreviewServer`/`configureServer`でRangeを処理するVite pluginを`vite.config.js`へ追加する(design.md Decision 12、spec: PMTilesの静的配信)
-- [ ] 9.3 `web/README.md`を書く: 依存ライブラリ、Viteの構成(root/publicDir/`base: './'`/`dist`)、`dev`・`build`・`preview`・`test`の使い分け、Range検証の`curl`例、ディレクトリ構成、GitHub Pagesサブパス配信への対応
+- [ ] 9.3 `web/README.md`を書く: 依存ライブラリとNode要件(`vite@^8`が要求する`^20.19.0 || >=22.12.0`)、Viteの構成(root/publicDir/`base: './'`/`dist`)、`dev`・`build`・`preview`・`test`の使い分け、Range検証の`curl`例、ディレクトリ構成、GitHub Pagesサブパス配信への対応
 
 ## 10. デプロイ — #11
 
-- [ ] 10.1 `.github/workflows/deploy-pages.yml`を作成する: `push: [main]`と`workflow_dispatch`、`pages: write`/`id-token: write`権限、`concurrency: pages`、buildジョブ(`npm ci`・`npm run build`・`configure-pages`・`upload-pages-artifact` with `path: web/dist`)、`needs: build`のdeployジョブ(`deploy-pages`)(design.md Decision 13、spec: site-deployment)
+- [ ] 10.1 `.github/workflows/deploy-pages.yml`を作成する: `push: [main]`と`workflow_dispatch`、`pages: write`/`id-token: write`権限、`concurrency: pages`、buildジョブ(`actions/setup-node`でNode 22・`npm ci`・`npm run build`・`configure-pages`・`upload-pages-artifact` with `path: web/dist`)、`needs: build`のdeployジョブ(`deploy-pages`)(design.md Decision 13、spec: site-deployment)
 - [ ] 10.2 GitHubリモートへpushし、Settings > Pages > Source を **GitHub Actions** に設定する(手動作業)
 - [ ] 10.3 ワークフローの実行結果を確認し、公開URLでマップが表示されることを確認する
 
