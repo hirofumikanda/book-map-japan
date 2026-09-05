@@ -8,11 +8,11 @@
 
 ## 2. パイプライン: 骨組みとOvertureクエリ — #2
 
-- [ ] 2.1 `pipeline/package.json`を作成する(ESM、`fetch`・`build:tiles`・`verify:tiles`・`test`スクリプト、devDependencies: `pmtiles`・`@mapbox/vector-tile`・`pbf`)
-- [ ] 2.2 `pipeline/src/overture-client.js`を実装する: `JAPAN_BBOX`(経度122〜154/緯度20〜46)・`BOOKSTORE_CATEGORIES = ["bookstore"]`・`MIN_CONFIDENCE = 0.9`の定数と、`buildQuery({release, bbox, categories, minConfidence})`(design.md Decision 1・3)
-- [ ] 2.3 `buildQuery`で`names`・`categories`・`brand`・`addresses`・`websites`を`to_json()`、`geometry`を`ST_AsGeoJSON()`でSELECTし、`INSTALL/LOAD spatial`・`httpfs`・`SET s3_region='us-west-2'`を含めることを確認する
-- [ ] 2.4 DuckDB CLIをサブプロセス実行する`execDuckDb`と、`queryOverturePlaces()`を実装する。`release`未指定は例外、`ENOENT`は導入案内付きエラー、`addresses`に`country: "JP"`を含むレコードのみ残す(design.md Decision 2)
-- [ ] 2.5 `pipeline/src/overture-client.test.js`を書く: releaseなしで例外、SQLにカテゴリ`bookstore`・bbox・confidenceしきい値が含まれる、`execImpl`注入で`JP`以外の住所が除外される、`geometry`文字列がオブジェクトへ復元される
+- [x] 2.1 `pipeline/package.json`を作成する(ESM、`fetch`・`build:tiles`・`verify:tiles`・`test`スクリプト、devDependencies: `pmtiles`・`@mapbox/vector-tile`・`pbf`)
+- [x] 2.2 `pipeline/src/overture-client.js`を実装する: `JAPAN_BBOX`(経度122〜154/緯度20〜46)・`BOOKSTORE_CATEGORIES = ["bookstore"]`・`MIN_CONFIDENCE = 0.9`の定数と、`buildQuery({release, bbox, categories, minConfidence})`(design.md Decision 1・3)
+- [x] 2.3 `buildQuery`で`names`・`categories`・`brand`・`addresses`・`websites`を`to_json()`、`geometry`を`ST_AsGeoJSON()`でSELECTし、`INSTALL/LOAD spatial`・`httpfs`・`SET s3_region='us-west-2'`を含めることを確認する
+- [x] 2.4 DuckDB CLIをサブプロセス実行する`execDuckDb`と、`queryOverturePlaces()`を実装する。`release`未指定は例外、`ENOENT`は導入案内付きエラー、`addresses`に`country: "JP"`を含むレコードのみ残す(design.md Decision 2)
+- [x] 2.5 `pipeline/src/overture-client.test.js`を書く: releaseなしで例外、SQLにカテゴリ`bookstore`・bbox・confidenceしきい値が含まれる、`execImpl`注入で`JP`以外の住所が除外される、`geometry`文字列がオブジェクトへ復元される
 
 ## 3. パイプライン: GeoJSON変換と取得スクリプト — #3
 
