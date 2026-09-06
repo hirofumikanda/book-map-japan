@@ -70,8 +70,8 @@
 
 ## 10. デプロイ — #11
 
-- [ ] 10.1 `.github/workflows/deploy-pages.yml`を作成する: `push: [main]`と`workflow_dispatch`、`pages: write`/`id-token: write`権限、`concurrency: pages`、buildジョブ(`actions/setup-node`でNode 22・`npm ci`・`npm run build`・`configure-pages`・`upload-pages-artifact` with `path: web/dist`)、`needs: build`のdeployジョブ(`deploy-pages`)(design.md Decision 13、spec: site-deployment)
-- [ ] 10.2 GitHubリモートへpushし、Settings > Pages > Source を **GitHub Actions** に設定する(手動作業)
+- [x] 10.1 `.github/workflows/deploy-pages.yml`を作成する: `push: [main]`と`workflow_dispatch`、`pages: write`/`id-token: write`権限、`concurrency: pages`、buildジョブ(`actions/setup-node`でNode 22・`npm ci`・`npm run build`・`configure-pages`・`upload-pages-artifact` with `path: web/dist`)、`needs: build`のdeployジョブ(`deploy-pages`)(design.md Decision 13、spec: site-deployment)
+- [x] 10.2 GitHubリモートへpushし、Settings > Pages > Source を **GitHub Actions** に設定する(手動作業)
 - [ ] 10.3 ワークフローの実行結果を確認し、公開URLでマップが表示されることを確認する
 
 ## 11. 検証 — #12
