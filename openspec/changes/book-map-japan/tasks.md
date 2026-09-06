@@ -55,12 +55,12 @@
 
 ## 8. ビューア: コントロールとポップアップ — #9
 
-- [ ] 8.1 `NavigationControl`を`top-right`に追加する(spec: ナビゲーションコントロールの表示)
-- [ ] 8.2 `GeolocateControl`(`enableHighAccuracy`・`trackUserLocation`・`showUserLocation`)を`bottom-right`にattributionより後で追加し、`error`はwarnに留める(spec: 現在地表示コントロールの表示)
-- [ ] 8.3 `ChainFilterControl`(`IControl`)を実装して`top-left`に追加する: `CHAIN_FILTER_OPTIONS`から`<option>`を生成、初期値`all`、`visually-hidden`ラベルを`for`で紐付け、`mousedown`/`dblclick`/`wheel`/`touchstart`の伝播を止める(design.md Decision 9、spec: チェーン店の絞り込みプルダウンメニュー)
-- [ ] 8.4 `applyChainFilter(value)`を実装し、`change`で`map.setFilter(BOOK_LAYER_ID, buildBookFilter(value))`だけを呼ぶ形にする
-- [ ] 8.5 ポップアップを実装する: レイヤ限定の`click`、`escapeHtml`、名称フォールバック(`name`→`brand`→`operator`→既定文言)、`brand`が名称と異なる場合のみ表示、`address`、`confidence`は生値、`websites`は文字列/配列をパースし`http`/`https`のみリンク化(spec: POIクリック時のポップアップ表示)
-- [ ] 8.6 `mouseenter`/`mouseleave`でカーソルを`pointer`に切り替える
+- [x] 8.1 `NavigationControl`を`top-right`に追加する(spec: ナビゲーションコントロールの表示)
+- [x] 8.2 `GeolocateControl`(`enableHighAccuracy`・`trackUserLocation`・`showUserLocation`)を`bottom-right`にattributionより後で追加し、`error`はwarnに留める(spec: 現在地表示コントロールの表示)
+- [x] 8.3 `ChainFilterControl`(`IControl`)を実装して`top-left`に追加する: `CHAIN_FILTER_OPTIONS`から`<option>`を生成、初期値`all`、`visually-hidden`ラベルを`for`で紐付け、`mousedown`/`dblclick`/`wheel`/`touchstart`の伝播を止める(design.md Decision 9、spec: チェーン店の絞り込みプルダウンメニュー)
+- [x] 8.4 `applyChainFilter(value)`を実装し、`change`で`map.setFilter(BOOK_LAYER_ID, buildBookFilter(value))`だけを呼ぶ形にする
+- [x] 8.5 ポップアップを実装する: レイヤ限定の`click`、`escapeHtml`、名称フォールバック(`name`→`brand`→`operator`→既定文言)、`brand`が名称と異なる場合のみ表示、`address`、`confidence`は生値、`websites`は文字列/配列をパースし`http`/`https`のみリンク化(spec: POIクリック時のポップアップ表示)
+- [x] 8.6 `mouseenter`/`mouseleave`でカーソルを`pointer`に切り替える
 
 ## 9. 開発サーバーとドキュメント — #10
 

@@ -1,11 +1,18 @@
 // maplibre-gl v6 は default export を持たないため名前付きで読み込む
-import { addProtocol, Map as MapLibreMap } from "maplibre-gl";
+import {
+  addProtocol,
+  GeolocateControl,
+  Map as MapLibreMap,
+  NavigationControl,
+  Popup,
+} from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Protocol } from "pmtiles";
 
 import {
   buildChainIdExpression,
   buildIconImageExpression,
+  CHAIN_FILTER_OPTIONS,
   CHAIN_TABLE,
   GENERIC_BOOK_ICON_ID,
 } from "./chains.js";
@@ -16,6 +23,12 @@ const BOOK_LAYER_ID = "book";
 
 /** チェーン絞り込みプルダウンの「すべて」を表す値。 */
 const ALL_CHAINS_VALUE = "all";
+
+/** プルダウンと visually-hidden ラベルを紐付けるための id。 */
+const CHAIN_FILTER_SELECT_ID = "chain-filter-select";
+
+/** 店名・ブランド・事業者名のいずれも持たない POI のポップアップ見出し。 */
+const POPUP_FALLBACK_NAME = "(名称不明)";
 
 /** PMTiles と画像は publicDir 直下へ出力されるため、ページ URL 基準で解決する。 */
 const PMTILES_PATH = "book.pmtiles";
@@ -78,6 +91,9 @@ export function buildBookFilter(selectedValue) {
   return ["any", IS_CHAIN_STORE, ["all", [">=", ["zoom"], 14], CONFIDENCE_FILTER]];
 }
 
+/** 現在プルダウンで選択されているチェーン。レイヤ追加時の初期 filter にも使う。 */
+let selectedChainValue = ALL_CHAINS_VALUE;
+
 /** ラベルは z15 以上でのみ表示し、name → brand → operator の順にフォールバックする。 */
 const TEXT_FIELD_EXPRESSION = [
   "step",
@@ -133,6 +149,140 @@ async function loadAndAddBookIcon(map, def) {
   map.addImage(def.id, data);
 }
 
+/** POI のプロパティを HTML へ埋め込む前にエスケープする。 */
+export function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * websites を URL の配列へ正規化する。ベクタタイルのプロパティは配列を保持できず
+ * JSON 文字列になることがあるため、文字列・JSON 文字列・配列のいずれも受ける。
+ */
+function parseWebsites(raw) {
+  if (Array.isArray(raw)) {
+    return raw;
+  }
+
+  if (typeof raw !== "string" || raw.trim() === "") {
+    return [];
+  }
+
+  const trimmed = raw.trim();
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    return Array.isArray(parsed) ? parsed : [parsed];
+  } catch {
+    // JSON でなければ単一の URL とみなす
+    return [trimmed];
+  }
+}
+
+/** http / https のみをリンク化の対象にする(spec: POIクリック時のポップアップ表示)。 */
+function isHttpUrl(value) {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  try {
+    const { protocol } = new URL(value);
+    return protocol === "http:" || protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+/** ポップアップの HTML を組み立てる。値はすべてエスケープする。 */
+export function buildPopupHtml(properties) {
+  const name = properties.name || properties.brand || properties.operator || POPUP_FALLBACK_NAME;
+
+  const rows = [];
+  // ブランドが見出しと同じ文字列なら重複表示しない
+  if (properties.brand && properties.brand !== name) {
+    rows.push(["ブランド", properties.brand]);
+  }
+  if (properties.address) {
+    rows.push(["住所", properties.address]);
+  }
+  if (properties.confidence !== undefined && properties.confidence !== null) {
+    // 丸めや変換をせず元の数値をそのまま出す
+    rows.push(["信頼度", properties.confidence]);
+  }
+
+  const parts = [`<h2 class="book-popup-title">${escapeHtml(name)}</h2>`];
+
+  if (rows.length > 0) {
+    const items = rows
+      .map(([label, value]) => `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`)
+      .join("");
+    parts.push(`<dl class="book-popup-props">${items}</dl>`);
+  }
+
+  const links = parseWebsites(properties.websites).filter(isHttpUrl);
+  if (links.length > 0) {
+    const items = links
+      .map((url) => {
+        const escaped = escapeHtml(url);
+        return `<li><a href="${escaped}" target="_blank" rel="noopener noreferrer">${escaped}</a></li>`;
+      })
+      .join("");
+    parts.push(`<ul class="book-popup-links">${items}</ul>`);
+  }
+
+  return `<div class="book-popup">${parts.join("")}</div>`;
+}
+
+/**
+ * 左上のチェーン絞り込みプルダウン(spec: チェーン店の絞り込みプルダウンメニュー)。
+ * CHAIN_FILTER_OPTIONS から選択肢を生成するため、チェーンの増減に自動で追随する。
+ */
+class ChainFilterControl {
+  #container = null;
+
+  onAdd() {
+    const container = document.createElement("div");
+    container.className = "maplibregl-ctrl chain-filter-ctrl";
+
+    const label = document.createElement("label");
+    label.className = "visually-hidden";
+    label.htmlFor = CHAIN_FILTER_SELECT_ID;
+    label.textContent = "チェーンで絞り込む";
+
+    const select = document.createElement("select");
+    select.id = CHAIN_FILTER_SELECT_ID;
+
+    for (const option of CHAIN_FILTER_OPTIONS) {
+      const optionElement = document.createElement("option");
+      optionElement.value = option.value;
+      optionElement.textContent = option.label;
+      select.append(optionElement);
+    }
+
+    select.value = ALL_CHAINS_VALUE;
+    select.addEventListener("change", () => applyChainFilter(select.value));
+
+    // プルダウンの操作で地図がパン・ズームしないよう、地図へのイベント伝播を止める
+    for (const type of ["mousedown", "dblclick", "wheel", "touchstart"]) {
+      container.addEventListener(type, (event) => event.stopPropagation());
+    }
+
+    container.append(label, select);
+    this.#container = container;
+
+    return container;
+  }
+
+  onRemove() {
+    this.#container?.remove();
+    this.#container = null;
+  }
+}
+
 addProtocol("pmtiles", new Protocol().tile);
 
 const map = new MapLibreMap({
@@ -142,6 +292,57 @@ const map = new MapLibreMap({
   center: [139.7528, 35.6852],
   zoom: 10,
   hash: true,
+});
+
+/**
+ * プルダウンの選択をレイヤへ反映する(tasks 8.4)。
+ * ソース・レイヤ・アイコンは不変で、filter を張り替えるだけ(design.md Decision 9)。
+ */
+function applyChainFilter(value) {
+  selectedChainValue = value;
+
+  // スタイル読み込み中はレイヤがまだ無い。選択値は保持し、addLayer 時に反映される
+  if (map.getLayer(BOOK_LAYER_ID)) {
+    map.setFilter(BOOK_LAYER_ID, buildBookFilter(value));
+  }
+}
+
+map.addControl(new NavigationControl(), "top-right");
+
+const geolocateControl = new GeolocateControl({
+  positionOptions: { enableHighAccuracy: true },
+  trackUserLocation: true,
+  showUserLocation: true,
+});
+
+// 位置情報を取得できなくても地図・他コントロール・POI表示は動き続ける。警告に留める
+geolocateControl.on("error", (event) => {
+  console.warn("現在地を取得できませんでした", event);
+});
+
+// attribution より後に追加することで、bottom 系コーナーでは attribution の上に載る
+map.addControl(geolocateControl, "bottom-right");
+
+map.addControl(new ChainFilterControl(), "top-left");
+
+map.on("click", BOOK_LAYER_ID, (event) => {
+  const feature = event.features?.[0];
+  if (!feature) {
+    return;
+  }
+
+  new Popup({ closeButton: true })
+    .setLngLat(feature.geometry.coordinates.slice())
+    .setHTML(buildPopupHtml(feature.properties ?? {}))
+    .addTo(map);
+});
+
+map.on("mouseenter", BOOK_LAYER_ID, () => {
+  map.getCanvas().style.cursor = "pointer";
+});
+
+map.on("mouseleave", BOOK_LAYER_ID, () => {
+  map.getCanvas().style.cursor = "";
 });
 
 // スタイル再読み込み等で未登録のアイコンが参照された場合に遅延登録する
@@ -174,7 +375,7 @@ map.on("load", async () => {
     "source-layer": BOOK_SOURCE_LAYER,
     minzoom: 10,
     // maxzoom は設定しない。z14 タイルのオーバーズームで拡大時も表示を継続する
-    filter: buildBookFilter(ALL_CHAINS_VALUE),
+    filter: buildBookFilter(selectedChainValue),
     layout: {
       "icon-image": buildIconImageExpression(),
       "icon-allow-overlap": true,
