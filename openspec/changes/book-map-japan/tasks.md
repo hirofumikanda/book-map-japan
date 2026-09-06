@@ -45,13 +45,13 @@
 
 ## 7. ビューア: 地図本体 — #8
 
-- [ ] 7.1 `web/index.html`(Viteのroot直下)を作成する: `lang="ja"`、タイトル、`#map`の全画面スタイル、チェーン絞り込み`<select>`のスタイル(`.chain-filter-ctrl`)、`.visually-hidden`、`<script type="module" src="/src/main.js">`。import mapとCSSの`<link>`は置かない(design.md Decision 11)
-- [ ] 7.2 `web/src/main.js`冒頭で`import "maplibre-gl/dist/maplibre-gl.css"`し、PMTiles Protocolを`addProtocol`に登録し、OSMラスタ(`raster-opacity: 0.5`)+ `pmtiles://.../book.pmtiles`のvector sourceを持つstyleを組み立て、`glyphs`にdemotilesを指定する。PMTiles URLは`window.location.href`基準で解決する(spec: 背景地図の表示 / サブパス配信への対応)
-- [ ] 7.3 地図を`center: [139.7528, 35.6852]`・`zoom: 10`・`hash: true`で初期化し、OSM/Overture Maps両方のattributionを設定する(spec: 地図の初期表示位置 / 地図状態のURLハッシュ同期 / 出典への帰属表示)
-- [ ] 7.4 `CONFIDENCE_FILTER`(`step`式: z10-14=0.99 / z15=0.97 / z16=0.95 / z17+=0.90。チェーン店以外にのみ適用)と`buildBookFilter(selectedValue)`を実装する。「すべて」は`["any", ["!=", chainIdExpr, ""], ["all", [">=", ["zoom"], 14], CONFIDENCE_FILTER]]`、特定チェーン選択は`["==", chainIdExpr, "<id>"]`(design.md Decision 4・9)
-- [ ] 7.5 アイコン登録処理を実装する: `ICON_IMAGE_DEFS`(汎用`book.png` + 9チェーン)、`iconImageUrl()`(`window.location.href`基準)、`loadAndAddBookIcon()`、`styleimagemissing`ハンドラ(design.md Decision 10)
-- [ ] 7.6 `map.on("load")`で全アイコンを`Promise.all`でロードしてから`book`シンボルレイヤを追加する: `minzoom: 10`、`maxzoom`未設定(オーバーズーム)、`filter: buildBookFilter("all")`、`icon-image`は`buildIconImageExpression()`、`icon-allow-overlap: true`、`icon-size: 0.5`
-- [ ] 7.7 ラベルのlayoutを設定する: `text-field`は`step`式でz15未満は空文字列・z15以上は`name`→`brand`→`operator`のcoalesce、`text-font: ["Noto Sans Regular"]`、`text-size: 12`、`text-variable-anchor: ["left","top"]`、`text-radial-offset: 0.6`、`text-optional: true`(spec: POIラベルの配置)
+- [x] 7.1 `web/index.html`(Viteのroot直下)を作成する: `lang="ja"`、タイトル、`#map`の全画面スタイル、チェーン絞り込み`<select>`のスタイル(`.chain-filter-ctrl`)、`.visually-hidden`、`<script type="module" src="/src/main.js">`。import mapとCSSの`<link>`は置かない(design.md Decision 11)
+- [x] 7.2 `web/src/main.js`冒頭で`import "maplibre-gl/dist/maplibre-gl.css"`し、PMTiles Protocolを`addProtocol`に登録し、OSMラスタ(`raster-opacity: 0.5`)+ `pmtiles://.../book.pmtiles`のvector sourceを持つstyleを組み立て、`glyphs`にdemotilesを指定する。PMTiles URLは`window.location.href`基準で解決する(spec: 背景地図の表示 / サブパス配信への対応)
+- [x] 7.3 地図を`center: [139.7528, 35.6852]`・`zoom: 10`・`hash: true`で初期化し、OSM/Overture Maps両方のattributionを設定する(spec: 地図の初期表示位置 / 地図状態のURLハッシュ同期 / 出典への帰属表示)
+- [x] 7.4 `CONFIDENCE_FILTER`(`step`式: z10-14=0.99 / z15=0.97 / z16=0.95 / z17+=0.90。チェーン店以外にのみ適用)と`buildBookFilter(selectedValue)`を実装する。「すべて」は`["any", ["!=", chainIdExpr, ""], ["all", [">=", ["zoom"], 14], CONFIDENCE_FILTER]]`、特定チェーン選択は`["==", chainIdExpr, "<id>"]`(design.md Decision 4・9)
+- [x] 7.5 アイコン登録処理を実装する: `ICON_IMAGE_DEFS`(汎用`book.png` + 9チェーン)、`iconImageUrl()`(`window.location.href`基準)、`loadAndAddBookIcon()`、`styleimagemissing`ハンドラ(design.md Decision 10)
+- [x] 7.6 `map.on("load")`で全アイコンを`Promise.all`でロードしてから`book`シンボルレイヤを追加する: `minzoom: 10`、`maxzoom`未設定(オーバーズーム)、`filter: buildBookFilter("all")`、`icon-image`は`buildIconImageExpression()`、`icon-allow-overlap: true`、`icon-size: 0.5`
+- [x] 7.7 ラベルのlayoutを設定する: `text-field`は`step`式でz15未満は空文字列・z15以上は`name`→`brand`→`operator`のcoalesce、`text-font: ["Noto Sans Regular"]`、`text-size: 12`、`text-variable-anchor: ["left","top"]`、`text-radial-offset: 0.6`、`text-optional: true`(spec: POIラベルの配置)
 
 ## 8. ビューア: コントロールとポップアップ — #9
 
