@@ -5,8 +5,14 @@ import {
   Map as MapLibreMap,
   NavigationControl,
   Popup,
+  setWorkerUrl,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+// maplibre-gl v6 はワーカーの URL を `new URL(`./${変数}`, import.meta.url)` で
+// 実行時に組み立てるため、バンドラが静的に検出できずワーカーが出力されない。
+// Vite の ?worker&url でワーカーを（依存する maplibre-gl-shared ごと）バンドルさせ、
+// その URL を setWorkerUrl() で明示的に渡す。
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
 import { Protocol } from "pmtiles";
 
 import {
@@ -282,6 +288,9 @@ class ChainFilterControl {
     this.#container = null;
   }
 }
+
+// 地図の生成より前にワーカー URL を確定させる
+setWorkerUrl(maplibreWorkerUrl);
 
 addProtocol("pmtiles", new Protocol().tile);
 

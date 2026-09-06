@@ -13,4 +13,9 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
   },
+  // maplibre-gl はワーカーを `new Worker(url, { type: "module" })` で生成するため、
+  // 出力形式も ES modules に揃える。
+  worker: {
+    format: "es",
+  },
 });
