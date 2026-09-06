@@ -1,0 +1,56 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 公開は同時に1つだけ。進行中のデプロイは打ち切らず、完了させてから次を流す
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # web のビルドのみを行う。Overture の取得や PMTiles 生成は実行しない
+  # (DuckDB CLI・tippecanoe を CI へ持ち込まないため。book.pmtiles はコミット済み)
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # vite@8 が要求する Node は ^20.19.0 || >=22.12.0
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          # path はワークスペース基準。public/ の img と book.pmtiles も dist へ入る
+          path: web/dist
+
+  # build が失敗した場合は needs により実行されず、既存の公開内容は変更されない
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
