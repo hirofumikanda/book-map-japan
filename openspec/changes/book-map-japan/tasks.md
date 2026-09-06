@@ -64,9 +64,9 @@
 
 ## 9. 開発サーバーとドキュメント — #10
 
-- [ ] 9.1 `npm run dev`と`npm run build && npm run preview`の両方で`book.pmtiles`とアイコンが解決され、POIが表示されることを確認する
-- [ ] 9.2 `curl -i -r 0-99 <preview origin>/book.pmtiles`が`206 Partial Content`と正しい`Content-Range`を返すことを実測する。返さない場合のみ、`configurePreviewServer`/`configureServer`でRangeを処理するVite pluginを`vite.config.js`へ追加する(design.md Decision 12、spec: PMTilesの静的配信)
-- [ ] 9.3 `web/README.md`を書く: 依存ライブラリとNode要件(`vite@^8`が要求する`^20.19.0 || >=22.12.0`)、Viteの構成(root/publicDir/`base: './'`/`dist`)、`dev`・`build`・`preview`・`test`の使い分け、Range検証の`curl`例、ディレクトリ構成、GitHub Pagesサブパス配信への対応
+- [x] 9.1 `npm run dev`と`npm run build && npm run preview`の両方で`book.pmtiles`とアイコンが解決され、POIが表示されることを確認する
+- [x] 9.2 `curl -i -r 0-99 <preview origin>/book.pmtiles`が`206 Partial Content`と正しい`Content-Range`を返すことを実測する。返さない場合のみ、`configurePreviewServer`/`configureServer`でRangeを処理するVite pluginを`vite.config.js`へ追加する(design.md Decision 12、spec: PMTilesの静的配信)
+- [x] 9.3 `web/README.md`を書く: 依存ライブラリとNode要件(`vite@^8`が要求する`^20.19.0 || >=22.12.0`)、Viteの構成(root/publicDir/`base: './'`/`dist`)、`dev`・`build`・`preview`・`test`の使い分け、Range検証の`curl`例、ディレクトリ構成、GitHub Pagesサブパス配信への対応
 
 ## 10. デプロイ — #11
 
